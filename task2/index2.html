@@ -1,0 +1,42 @@
+<<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>second</title>
+  </head>
+  <body>
+    <script>
+      let socket;
+
+      let clientMessage;
+
+      const startWS = () => {
+        socket = new WebSocket("ws:/localhost:4000/ws");
+
+        socket.onmessage = e => {
+          let message = JSON.parse(e.data);
+          document.getElementById(
+            "counter"
+          ).innerHTML = `Count of clients: ${message.size}`;
+        };
+
+        clientMessage = setInterval(() => {
+          socket.send("Client");
+        }, 2000);
+      };
+
+      const closeWS = () => {
+        clearInterval(clientMessage);
+        socket.send("Exit");
+      };
+    </script>
+    <div id="counter">Count of clients: 0</div>
+    <br />
+    <button onclick="startWS()">
+      startWS
+    </button>
+    <button onclick="closeWS()">
+      closeWS
+    </button>
+  </body>
+</html>
