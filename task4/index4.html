@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>4</title>
+  </head>
+  <body>
+    <script>
+      const socket = new WebSocket("ws:/localhost:4000/ws");
+      let obj = {};
+
+      const startWS = () => {
+        let clientMessage = setInterval(() => {
+          obj.x = Math.floor(Math.random() * 100);
+          obj.y = Math.floor(Math.random() * 100);
+          socket.send(JSON.stringify(obj));
+        }, 2000);
+
+        setTimeout(() => {
+          clearInterval(clientMessage);
+        }, 10000);
+      };
+
+      setTimeout(() => {
+        socket.close();
+        console.log("socket is closed");
+      }, 20000);
+
+      socket.onmessage = e => {
+        document.getElementById("div").innerHTML = e.data;
+      };
+
+      const closeWS = () => {
+        socket.close();
+        clearInterval(clientMessage);
+      };
+    </script>
+    <div id="div"></div>
+    <br />
+    <button onclick="startWS()">
+      START
+    </button>
+    <button onclick="closeWS()">
+      END
+    </button>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WS-server 1</title>
+  </head>
+  <body>
+    <script>
+      const socket = new WebSocket("ws:/localhost:4000/ws");
+      let clientMessage;
+      let i = 0;
+      const startWS = () => {
+        socket.onopen = () => {
+          setInterval(() => {
+            socket.send("socket.onopen");
+          }, 1000);
+        };
+        socket.onclose = e => {
+          console.log("socket.onclose", e);
+        };
+        socket.onmessage = e => {
+          console.log("socket.onmessage", e.data);
+        };
+        socket.onerror = error => {
+          console.log(`Error + ${error.message}`);
+        };
+
+        clientMessage = setInterval(() => {
+          socket.send(`${i++} client message`);
+        }, 2000);
+      };
+
+      const closeWS = () => {
+        socket.close();
+        clearInterval(clientMessage);
+      };
+    </script>
+    <button onclick="startWS()">
+      START
+    </button>
+    <button onclick="closeWS()">
+      END
+    </button>
+  </body>
+</html>
